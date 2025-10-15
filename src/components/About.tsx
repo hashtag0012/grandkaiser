@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
-import Beams from './ui/Beams';
+import GradientBlinds from './ui/GradientBlinds';
 
 export default function About() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -17,17 +17,18 @@ export default function About() {
 
   return (
     <section ref={sectionRef} id="about" className="relative min-h-screen bg-black overflow-hidden">
-      {/* Enhanced Beams Background */}
+      {/* GradientBlinds Background */}
       <div className="absolute inset-0">
-        <Beams
-          beamWidth={2}
-          beamHeight={14}
-          beamNumber={10}
-          lightColor="#2a2a4a"
-          speed={1.8}
-          noiseIntensity={1.5}
-          scale={0.2}
-          rotation={12}
+        <GradientBlinds
+          className="w-full h-full"
+          dpr={Math.min(window.devicePixelRatio, 2)}
+          gradientColors={['#4a4a8a', '#6a6aaa', '#8a8aca', '#aaaaff']}
+          angle={30}
+          blindCount={8}
+          mouseDampening={0.2}
+          spotlightRadius={0.8}
+          spotlightOpacity={0.3}
+          mixBlendMode="screen"
         />
       </div>
 

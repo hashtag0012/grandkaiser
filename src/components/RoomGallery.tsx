@@ -1,7 +1,8 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Bed, Users, Wifi, Car, Star, ArrowRight } from 'lucide-react';
 import RippleGrid from './ui/RippleGrid';
+import ReservationModal from './ui/ReservationModal';
 
 const rooms = [
   {
@@ -42,7 +43,7 @@ const rooms = [
   }
 ];
 
-function RoomCard({ room, index }: { room: typeof rooms[0], index: number }) {
+function RoomCard({ room, index, onBookNow }: { room: typeof rooms[0], index: number, onBookNow: (room: typeof rooms[0]) => void }) {
 
   const getAmenityIcon = (amenity: string) => {
     if (amenity.includes('Bed')) return <Bed size={16} />;
@@ -60,15 +61,26 @@ function RoomCard({ room, index }: { room: typeof rooms[0], index: number }) {
       className="group relative"
     >
       <div className="relative backdrop-blur-xl bg-black/20 border border-white/10 rounded-3xl p-8 hover:bg-black/30 transition-all duration-500 transform-gpu">
+        {/* Enhanced Gradient overlays */}
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/15 via-yellow-600/8 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-t from-amber-900/20 via-transparent to-transparent rounded-3xl opacity-30" />
+        <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-amber-400/20 to-transparent rounded-full blur-2xl opacity-50" />
+        
         {/* Content */}
         <div className="relative z-10 space-y-6">
-          {/* Room Image Placeholder */}
-          <div className="aspect-[4/3] bg-slate-900 rounded-2xl flex items-center justify-center mb-6 overflow-hidden">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Bed className="text-black" size={24} />
+          {/* Room Image */}
+          <div className="aspect-[4/3] bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl overflow-hidden mb-6 relative">
+            <img 
+              src={`https://images.unsplash.com/photo-${room.id === 1 ? '1618773928121-c32242e63f39' : room.id === 2 ? '1631049307264-b8ec7b2e5b1b' : room.id === 3 ? '1566073771259-6a8506057963' : '1582719478250-c89cae4dc85b'}?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80`}
+              alt={room.name}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-900/30 via-transparent to-blue-900/20" />
+            <div className="absolute bottom-4 left-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-full flex items-center justify-center">
+                <Bed className="text-black" size={20} />
               </div>
-              <p className="text-white/60 text-sm">{room.name}</p>
             </div>
             
             {/* Floating elements */}
@@ -137,6 +149,7 @@ function RoomCard({ room, index }: { room: typeof rooms[0], index: number }) {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
+              onClick={() => onBookNow(room)}
               className="flex-1 bg-gradient-to-r from-amber-500 to-yellow-600 text-black py-3 rounded-xl font-semibold hover:from-yellow-400 hover:to-amber-500 transition-all duration-300"
             >
               Book Now
@@ -159,11 +172,23 @@ function RoomCard({ room, index }: { room: typeof rooms[0], index: number }) {
 export default function RoomGallery() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const [selectedRoom, setSelectedRoom] = useState<typeof rooms[0] | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleBookNow = (room: typeof rooms[0]) => {
+    setSelectedRoom(room);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedRoom(null);
+  };
 
   return (
     <section ref={sectionRef} id="rooms" className="relative py-20 bg-black overflow-hidden">
       {/* Enhanced RippleGrid Background */}
-      <div className="absolute inset-0 w-full h-full">
+      <div className="absolute inset-0">
         <RippleGrid
           enableRainbow={false}
           gridColor="#3a3a6a"
@@ -178,6 +203,17 @@ export default function RoomGallery() {
           vignetteStrength={0.0}
         />
       </div>
+
+      {/* Enhanced Gradient Overlays */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/40 via-black/60 to-slate-800/40" />
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-800/30 via-transparent to-slate-900/30" />
+      <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 via-transparent to-gray-800/40" />
+      <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-slate-700/20 to-transparent" />
+      <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-slate-700/20 to-transparent" />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-amber-600/15 to-yellow-700/15 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-blue-800/20 to-indigo-900/20 rounded-full blur-3xl" />
+      <div className="absolute top-3/4 left-1/2 w-72 h-72 bg-gradient-to-r from-purple-800/12 to-pink-900/12 rounded-full blur-3xl" />
+      <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-gradient-to-r from-emerald-800/10 to-teal-900/10 rounded-full blur-3xl" />
 
       <div className="relative z-10 container mx-auto px-4">
         {/* Header */}
@@ -204,7 +240,7 @@ export default function RoomGallery() {
         {/* Room Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {rooms.map((room, index) => (
-            <RoomCard key={room.id} room={room} index={index} />
+            <RoomCard key={room.id} room={room} index={index} onBookNow={handleBookNow} />
           ))}
         </div>
 
@@ -227,6 +263,14 @@ export default function RoomGallery() {
           </motion.button>
         </motion.div>
       </div>
+
+      {/* Reservation Modal */}
+      <ReservationModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        roomName={selectedRoom?.name || ''}
+        roomPrice={selectedRoom?.price || ''}
+      />
     </section>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { gsap } from 'gsap';
 import Silk from './ui/Silk';
+import Model3D from './ui/Model3D';
 
 export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -60,13 +61,31 @@ export default function Hero() {
   return (
     <div ref={heroRef} className="relative h-screen w-full overflow-hidden bg-black">
       {/* Enhanced Silk Background */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 z-0">
         <Silk
           speed={2.5}
           scale={1.4}
           color="#2a2a4a"
           noiseIntensity={0.8}
           rotation={0.05}
+        />
+      </div>
+
+
+      {/* 3D Model - Your Gold Initials (Behind Text) */}
+      <div 
+        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/4 pointer-events-none"
+        style={{ 
+          zIndex: 20,
+          width: '400px', 
+          height: '400px'
+        }}
+      >
+        <Model3D
+          modelPath="/models/Gold_Initials_1013141911_texture.glb"
+          position={[0, 0, 0]}
+          scale={[2.2, 2.2, 2.2]}
+          autoRotate={true}
         />
       </div>
       
@@ -85,7 +104,7 @@ export default function Hero() {
       {/* Content */}
       <motion.div 
         style={{ y, opacity }}
-        className="relative z-10 flex flex-col items-center justify-center h-full px-4 text-center"
+        className="relative z-50 flex flex-col items-center justify-center h-full px-4 text-center"
       >
         <motion.div
           initial={{ opacity: 0, y: 50 }}
